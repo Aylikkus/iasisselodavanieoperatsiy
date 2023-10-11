@@ -8,6 +8,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        <lvc:CartesianChart Name="chart1"  MouseWheel="chart1_MouseWheel" PreviewMouseWheel="chart1_PreviewMouseWheel" Zoom="Xy" ZoomingSpeed="1"/>
+        <lvc:CartesianChart Name="chart1"  MouseWheel="chart1_MouseWheel" PreviewMouseWheel="chart1_PreviewMouseWheel" Zoom="Xy" ZoomingSpeed="1">
+            <lvc:CartesianChart.AxisX>
+                <lvc:Axis Title="Иксы"></lvc:Axis>
+            </lvc:CartesianChart.AxisX>
+            <lvc:CartesianChart.AxisY>
+                <lvc:Axis Title="Игреки"></lvc:Axis>
+            </lvc:CartesianChart.AxisY>
+        </lvc:CartesianChart>
     </Grid>
 </Window>

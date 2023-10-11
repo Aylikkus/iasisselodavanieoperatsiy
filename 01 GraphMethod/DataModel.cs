@@ -63,7 +63,6 @@ namespace GraphMethod
         public TargetFunction TargetFunction { get; set; }
         public SystemEquations SystemEquations { get; set; }
 
-        // Тест
         public DataModel(CartesianChart chart)
         {
             cartesianChart = chart;
@@ -74,26 +73,15 @@ namespace GraphMethod
             y1 = new LinearEquation(this, 1, 0,
                     0, Sign.Equal);
             x2 = new LinearEquation(this, 0, 1,
-                    cartesianChart.MinHeight, Sign.Equal);
+                    100, Sign.Equal);
             y2 = new LinearEquation(this, 1, 0,
-                    cartesianChart.MinWidth, Sign.Equal);
-
-            TargetFunction = new TargetFunction(chart, 3, 4, Target.Max);
-
-            SystemEquations = new SystemEquations(this, new List<LinearEquation>
-            {
-                new LinearEquation(this, 4, 9, 36, Sign.Less),
-                new LinearEquation(this, 2, 1, 11, Sign.Less),
-                new LinearEquation(this, 1, 0, 5, Sign.Less),
-                new LinearEquation(this, 1, 0, 0, Sign.More),
-                new LinearEquation(this, 0, 1, 0, Sign.More)
-            });
+                    100, Sign.Equal);
         }
 
         public void UpdateAxis()
         {
-            double b1 = cartesianChart.AxisX[0].MaxHeight;
-            double b2 = cartesianChart.MinHeight;
+            double b1 = cartesianChart.AxisX[0].MaxValue;
+            double b2 = cartesianChart.AxisY[0].MaxValue;
 
             if (isValidDouble(b1) && 
                 isValidDouble(b2))
@@ -135,12 +123,41 @@ namespace GraphMethod
                 decimal y = d2 / d;
 
                 ObservablePoint p = new ObservablePoint(
-                    (double)x,
-                    (double)y
+                    (double)y,
+                    (double)x
                 );
                 return p;
             }
-            catch(DivideByZeroException e)
+            catch(DivideByZeroException)
+            {
+                return null;
+            }
+        }
+
+        public ObservablePoint Intersect(ChartAxis axis, TargetFunction target)
+        {
+            LinearEquation e = new LinearEquation(this, target.C1, target.C2, 0, Sign.Equal);
+            return Intersect(axis, e);
+        }
+
+        public ObservablePoint Intersect(LinearEquation e1, LinearEquation e2)
+        {
+            decimal d = (decimal)(e1.C1 * e2.C2 - e1.C2 * e2.C1);
+            decimal d1 = (decimal)(e1.B * e2.C2 - e2.B * e1.C2);
+            decimal d2 = (decimal)(e1.C1 * e2.B - e1.B * e2.C1);
+
+            try
+            {
+                decimal x = d1 / d;
+                decimal y = d2 / d;
+
+                ObservablePoint p = new ObservablePoint(
+                    (double)y,
+                    (double)x
+                );
+                return p;
+            }
+            catch (DivideByZeroException)
             {
                 return null;
             }
@@ -150,6 +167,12 @@ namespace GraphMethod
         {
             UpdateAxis();
             SystemEquations.Draw();
+            //TargetFunction.Draw();
+        }
+
+        public void DrawRoAV()
+        {
+            SystemEquations.DrawRoAV(TargetFunction);
         }
     }
 }

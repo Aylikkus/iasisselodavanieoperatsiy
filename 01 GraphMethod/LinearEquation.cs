@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LiveCharts;
 using LiveCharts.Wpf;
 using LiveCharts.Defaults;
+using System.Windows.Media;
 
 namespace GraphMethod
 {
@@ -27,6 +28,8 @@ namespace GraphMethod
 
         public Sign Sign { get; set; }
 
+        public List<ObservablePoint> Intersections;
+
         public LinearEquation(DataModel dm, double c1, double c2, double b, Sign sign)
         {
             this.dm = dm;
@@ -36,9 +39,14 @@ namespace GraphMethod
             Sign = sign;
             lineSeries = new LineSeries
             {
+                Fill = Brushes.Transparent,
+                LineSmoothness = 0,
+                StrokeThickness = 1,
+                Stroke = Brushes.Red,
                 Values = new ChartValues<ObservablePoint>()
             };
             dm.cartesianChart.Series.Add(lineSeries);
+            Intersections = new List<ObservablePoint>();
         }
 
         public void Draw()
