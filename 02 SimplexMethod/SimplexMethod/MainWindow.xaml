@@ -9,7 +9,7 @@
     <Grid>
         
         <Grid x:Name="targetGrid"/>
-        <Grid x:Name="constraintsGrid"/>
+        <Grid x:Name="constraintsGrid" Background="#FF70ADBD"/>
         <Grid x:Name="butons" VerticalAlignment="Bottom" HorizontalAlignment="Left">
             <Button x:Name="printConstaints" Click="printConstaints_Click"/>
         </Grid>

@@ -8,15 +8,16 @@ using System.Threading.Tasks;
 
 namespace SimplexMethod
 {
-    public enum Target
+    public enum ValueOfTargetFunction
     {
-        Min,
-        Max
+        min,
+        max
     }
 
     public class TargetFunction : INotifyPropertyChanged
     {
         private double[] coefficients;
+        private ValueOfTargetFunction ValueOfTargetFunction { get; set; }
         private double b;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -26,7 +27,6 @@ namespace SimplexMethod
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public Target Target { get; set; }
 
         public int CoefficientsCount { get; private set; }
 
@@ -60,6 +60,34 @@ namespace SimplexMethod
                 coefficients[i] = value;
                 NotifyPropertyChanged();
             }
+        }
+        public TargetFunction(double[] coefficients, double B, ValueOfTargetFunction value)
+        {
+            this.coefficients = coefficients;
+            this.ValueOfTargetFunction = value;
+            this.B = B;
+        }
+
+        public TargetFunction CheckFunction(ValueOfTargetFunction value)
+        {
+            if (value == ValueOfTargetFunction.min)
+            {
+                for (int i = 0; i < coefficients.Length; i++)
+                {
+                    coefficients[i] = coefficients[i] * (-1);
+                    B = B * (-1);
+                }
+            }
+            return new TargetFunction(coefficients, B, value);
+        }
+        public double GetCoefficients(int temp)
+        {
+            return coefficients[temp];
+        }
+
+        public int GetCountOfCoefficients()
+        {
+            return coefficients.Length;
         }
     }
 }
