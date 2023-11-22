@@ -74,5 +74,29 @@ namespace SimplexMethod
         }
 
         private LinearExpression() { }
+        public int GetCountOfCoef()
+        {
+            int count = 0;
+            for (int i = 0; i < coefficients.Length; i++)
+            {
+
+                count++;
+            }
+            return count;
+        }
+
+        public double[] ChangeCoefficients(LinearExpression expression)
+        {
+            double[] coef = expression.coefficients;
+            for (int i = 0; i < coef.Length; i++)
+            {
+                coef[i] = coef[i] * (-1);
+            }
+            return coef;
+        }
+        public double[] ReturnCoefficients()
+        {
+            return coefficients;
+        }
     }
 }

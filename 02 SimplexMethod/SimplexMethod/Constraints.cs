@@ -62,5 +62,46 @@ namespace SimplexMethod
         }
 
         private Constraints() { }
+
+        public int GetCountOfExpressions()
+        {
+            return expressions.Length;
+        }
+
+        public LinearExpression GetExpression(int i)
+        {
+            return expressions[i];
+        }
+
+
+        public LinearExpression TransformExpression(LinearExpression expression)
+        {
+            if (expression.Sign == ">=")
+            {
+                expression.ChangeCoefficients(expression);
+                expression.B = expression.B * (-1);
+                expression.Sign = "<=";
+            }
+            return expression;
+        }
+
+        public LinearExpression[] TransformExpressions(LinearExpression[] expressions)
+        {
+            for (int i = 0; i < GetCountOfExpressions(); i++)
+            {
+                TransformExpression(expressions[i]);
+            }
+            return expressions;
+        }
+
+        public LinearExpression[] LeadToCanonicalForm(LinearExpression[] expressions)
+        {
+            for (int i = 0; i < expressions.Length; i++)
+            {
+
+                expressions[i].Sign = "=";
+            }
+            return expressions;
+        }
     }
 }
