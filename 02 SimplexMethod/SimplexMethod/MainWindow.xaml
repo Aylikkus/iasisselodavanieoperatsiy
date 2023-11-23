@@ -7,11 +7,13 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
-        
-        <Grid x:Name="targetGrid"/>
-        <Grid x:Name="constraintsGrid" Background="#FF70ADBD"/>
-        <Grid x:Name="butons" VerticalAlignment="Bottom" HorizontalAlignment="Left">
-            <Button x:Name="printConstaints" Click="printConstaints_Click"/>
-        </Grid>
+        <TabControl>
+            <TabItem Header="Целевая функция">
+                <Grid x:Name="targetGrid" Background="#FF70ADBD"/>
+            </TabItem>
+            <TabItem Header="Ограничения">
+                <Grid x:Name="constraintsGrid" Background="#FF70ADBD"/>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>

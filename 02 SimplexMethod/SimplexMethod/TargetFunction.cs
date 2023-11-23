@@ -17,7 +17,7 @@ namespace SimplexMethod
     public class TargetFunction : INotifyPropertyChanged
     {
         private double[] coefficients;
-        private ValueOfTargetFunction ValueOfTargetFunction { get; set; }
+        private ValueOfTargetFunction target;
         private double b;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -27,6 +27,43 @@ namespace SimplexMethod
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public ValueOfTargetFunction ValueOfTargetFunction 
+        { 
+            get
+            {
+                return target;
+            }
+            set
+            {
+                target = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public string Target
+        {
+            get
+            {
+                return target.ToString();
+            }
+            set
+            {
+                if (value == "min")
+                {
+                    target = ValueOfTargetFunction.min;
+                }
+                else 
+                if (value == "max")
+                {
+                    target = ValueOfTargetFunction.max;
+                }
+                else
+                {
+                    target = ValueOfTargetFunction.max;
+                }
+                NotifyPropertyChanged();
+            }
+        }
 
         public int CoefficientsCount { get; private set; }
 

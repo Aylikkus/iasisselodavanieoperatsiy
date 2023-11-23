@@ -11,7 +11,7 @@ namespace SimplexMethod
     public class DataModel : INotifyPropertyChanged
     {
         private Constraints constraints;
-        public static TargetFunction TargetFunction { get; set; }
+        private TargetFunction targetFunction;
 
         public Constraints Constraints
         {
@@ -26,9 +26,23 @@ namespace SimplexMethod
             }
         }
 
-        public DataModel(Constraints c)
+        public TargetFunction TargetFunction
+        {
+            get
+            {
+                return targetFunction;
+            }
+            set
+            {
+                targetFunction = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public DataModel(Constraints c, TargetFunction target)
         {
             Constraints = c;
+            TargetFunction = target;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -38,8 +52,6 @@ namespace SimplexMethod
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     
-        
-
         public static double[,] GetTableView(Constraints constraints, TargetFunction targetFunction)
         {
             double[,] Table = new double[constraints.Rows + 1, constraints.Columns];
