@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimplexMethod
 {
-    public enum ValueOfTargetFunction
+    public enum Target
     {
-        min,
-        max
+        Min,
+        Max
     }
 
     public class TargetFunction : INotifyPropertyChanged
     {
         private double[] coefficients;
-        private ValueOfTargetFunction target;
+        private Target target;
         private double b;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -27,7 +22,7 @@ namespace SimplexMethod
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ValueOfTargetFunction ValueOfTargetFunction 
+        public Target Target 
         { 
             get
             {
@@ -37,10 +32,11 @@ namespace SimplexMethod
             {
                 target = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(TargetString));
             }
         }
 
-        public string Target
+        public string TargetString
         {
             get
             {
@@ -48,20 +44,20 @@ namespace SimplexMethod
             }
             set
             {
-                if (value == "min")
+                string lowerCaseValue = value.ToLowerInvariant();
+                switch (lowerCaseValue)
                 {
-                    target = ValueOfTargetFunction.min;
-                }
-                else 
-                if (value == "max")
-                {
-                    target = ValueOfTargetFunction.max;
-                }
-                else
-                {
-                    target = ValueOfTargetFunction.max;
+                    case "min":
+                    case "<-":
+                        target = Target.Min;
+                        break;
+                    case "max":
+                    case "->":
+                        target = Target.Max; 
+                        break;
                 }
                 NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(Target));
             }
         }
 
@@ -84,8 +80,10 @@ namespace SimplexMethod
         {
             CoefficientsCount = numberOfCoefficients;
             coefficients = new double[numberOfCoefficients];
+            Target = Target.Max;
         }
 
+        [IndexerName ("Item")]
         public double this[int i]
         {
             get
@@ -95,34 +93,35 @@ namespace SimplexMethod
             set
             {
                 coefficients[i] = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged($"Item[]");
             }
         }
-        public TargetFunction(double[] coefficients, double B, ValueOfTargetFunction value)
+        public TargetFunction(double[] coefficients, double B, Target target)
         {
             this.coefficients = coefficients;
-            this.ValueOfTargetFunction = value;
+            this.target = target;
             this.B = B;
         }
 
-        public TargetFunction CheckFunction(ValueOfTargetFunction value)
+        public TargetFunction GetCanonicalForm()
         {
-            if (value == ValueOfTargetFunction.min)
+            TargetFunction canonical = new TargetFunction(CofficientsCount());
+            canonical.Target = Target;
+            canonical.coefficients = coefficients.Clone() as double[];
+            canonical.B = B;
+            if (canonical.Target == Target.Max)
             {
-                for (int i = 0; i < coefficients.Length; i++)
+                for (int i = 0; i < canonical.coefficients.Length; i++)
                 {
-                    coefficients[i] = coefficients[i] * (-1);
-                    B = B * (-1);
+                    canonical[i] *= -1;
+                    canonical.B *= -1;
                 }
+                canonical.Target = Target.Min;
             }
-            return new TargetFunction(coefficients, B, value);
-        }
-        public double GetCoefficients(int temp)
-        {
-            return coefficients[temp];
+            return canonical;
         }
 
-        public int GetCountOfCoefficients()
+        public int CofficientsCount()
         {
             return coefficients.Length;
         }

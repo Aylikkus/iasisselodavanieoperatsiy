@@ -1,18 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SimplexMethod
 {
@@ -22,11 +11,29 @@ namespace SimplexMethod
     public partial class MainWindow : Window
     {
         public DataModel model;
+        public int Rows { get; set; } = 2;
+        public int Cols { get; set; } = 2;
 
         public MainWindow()
         {
             InitializeComponent();
-            model = new DataModel(new Constraints(3, 3), new TargetFunction(3));
+            model = new DataModel(new Constraints(Rows, Cols), new TargetFunction(Cols));
+
+            // Значения по-умолчанию
+            model.TargetFunction[0] = 4;
+            model.TargetFunction[1] = 1;
+            //model.TargetFunction.Target = Target.Min;
+            model.TargetFunction.Target = Target.Max;
+
+            model.Constraints[0][0] = 4;
+            model.Constraints[0][1] = 3;
+            model.Constraints[0].Sign = Sign.GreaterThanEqual;
+            model.Constraints[0].B = 6;
+
+            model.Constraints[1][0] = 1;
+            model.Constraints[1][1] = 2;
+            model.Constraints[1].Sign = Sign.LessThanEqual;
+            model.Constraints[1].B = 4;
 
             initializeTargetGrid();
             initializeConstaintsGrid();
@@ -34,6 +41,9 @@ namespace SimplexMethod
 
         private void initializeTargetGrid()
         {
+            targetGrid.Children.Clear();
+            targetGrid.RowDefinitions.Clear();
+            targetGrid.ColumnDefinitions.Clear();
             int columns = model.TargetFunction.CoefficientsCount;
 
             var header = new RowDefinition();
@@ -65,7 +75,7 @@ namespace SimplexMethod
 
                 Binding valBinding = new Binding();
                 valBinding.Source = model.TargetFunction;
-                valBinding.Path = new PropertyPath($"[{i}]");
+                valBinding.Path = new PropertyPath($"Item[{i}]");
                 valBinding.Mode = BindingMode.TwoWay;
                 BindingOperations.SetBinding(input, TextBox.TextProperty, valBinding);
             }
@@ -104,7 +114,7 @@ namespace SimplexMethod
 
             Binding targetBinding = new Binding();
             targetBinding.Source = model.TargetFunction;
-            targetBinding.Path = new PropertyPath("Target");
+            targetBinding.Path = new PropertyPath("TargetString");
             targetBinding.Mode = BindingMode.TwoWay;
             BindingOperations.SetBinding(targetInput, TextBox.TextProperty, targetBinding);
 
@@ -127,6 +137,9 @@ namespace SimplexMethod
 
         private void initializeConstaintsGrid()
         {
+            constraintsGrid.Children.Clear();
+            constraintsGrid.RowDefinitions.Clear();
+            constraintsGrid.ColumnDefinitions.Clear();
             int rows = model.Constraints.Rows;
             int columns = model.Constraints.Columns;
 
@@ -137,16 +150,16 @@ namespace SimplexMethod
             {
                 var row = new RowDefinition();
                 constraintsGrid.RowDefinitions.Add(row);
-                
-                Label headerText = new Label();
-                headerText.Content = $"x{i + 1}";
-                headerText.SetValue(Grid.RowProperty, 0);
-                headerText.SetValue(Grid.ColumnProperty, i);
-
-                constraintsGrid.Children.Add(headerText);
 
                 for (int j = 0; j < columns; j++)
                 {
+                    Label headerText = new Label();
+                    headerText.Content = $"x{j + 1}";
+                    headerText.SetValue(Grid.RowProperty, 0);
+                    headerText.SetValue(Grid.ColumnProperty, j);
+
+                    constraintsGrid.Children.Add(headerText);
+
                     var column = new ColumnDefinition();
                     column.Width = new GridLength(50);
                     constraintsGrid.ColumnDefinitions.Add(column);
@@ -159,7 +172,7 @@ namespace SimplexMethod
 
                     Binding valBinding = new Binding();
                     valBinding.Source = model.Constraints;
-                    valBinding.Path = new PropertyPath($"[{i}][{j}]");
+                    valBinding.Path = new PropertyPath($"Item[{i}][{j}]");
                     valBinding.Mode = BindingMode.TwoWay;
                     BindingOperations.SetBinding(input, TextBox.TextProperty, valBinding);
                 }
@@ -198,7 +211,7 @@ namespace SimplexMethod
 
                 Binding signBinding = new Binding();
                 signBinding.Source = model.Constraints[i];
-                signBinding.Path = new PropertyPath("Sign");
+                signBinding.Path = new PropertyPath("SignString");
                 signBinding.Mode = BindingMode.TwoWay;
                 BindingOperations.SetBinding(signInput, TextBox.TextProperty, signBinding);
 
@@ -217,6 +230,31 @@ namespace SimplexMethod
                 bBinding.Mode = BindingMode.TwoWay;
                 BindingOperations.SetBinding(bInput, TextBox.TextProperty, bBinding);
             }
+        }
+
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
+        {
+            model = new DataModel(new Constraints(Rows, Cols), new TargetFunction(Cols));
+
+            initializeTargetGrid();
+            initializeConstaintsGrid();
+        }
+        private void SolveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var solution = model.SolveWithSimplexMethod();
+            double[] x = solution.Item1;
+            double b = solution.Item2;
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("Иксы: ");
+            for (int i = 0; i < x.Length; i++)
+            {
+                sb.Append($"x{i + 1}=" + x[i] + " ");
+            }
+
+            sb.AppendLine("B: " + b);
+
+            MessageBox.Show(sb.ToString());
         }
     }
 }

@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimplexMethod
 {
@@ -22,6 +17,7 @@ namespace SimplexMethod
         public int Rows { get; private set; }
         public int Columns { get; private set; }
 
+        [IndexerName("Item")]
         public LinearExpression this[int i]
         {
             get
@@ -31,10 +27,11 @@ namespace SimplexMethod
             set
             {
                 expressions[i] = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged("Item[]");
             }
         }
 
+        [IndexerName("Item")]
         public double this[int i, int j]
         {
             get
@@ -44,7 +41,7 @@ namespace SimplexMethod
             set
             {
                 expressions[i][j] = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged("Item[,]");
             }
         }
 
@@ -63,45 +60,25 @@ namespace SimplexMethod
 
         private Constraints() { }
 
-        public int GetCountOfExpressions()
-        {
-            return expressions.Length;
-        }
-
-        public LinearExpression GetExpression(int i)
-        {
-            return expressions[i];
-        }
-
-
-        public LinearExpression TransformExpression(LinearExpression expression)
-        {
-            if (expression.Sign == ">=")
-            {
-                expression.ChangeCoefficients(expression);
-                expression.B = expression.B * (-1);
-                expression.Sign = "<=";
-            }
-            return expression;
-        }
-
-        public LinearExpression[] TransformExpressions(LinearExpression[] expressions)
-        {
-            for (int i = 0; i < GetCountOfExpressions(); i++)
-            {
-                TransformExpression(expressions[i]);
-            }
-            return expressions;
-        }
-
-        public LinearExpression[] LeadToCanonicalForm(LinearExpression[] expressions)
+        public void TransformExpressions()
         {
             for (int i = 0; i < expressions.Length; i++)
             {
-
-                expressions[i].Sign = "=";
+                LinearExpression expression = expressions[i];
+                if (expression.Sign == Sign.GreaterThanEqual)
+                {
+                    expression.InvertGreaterThan();
+                }
             }
-            return expressions;
+        }
+
+        public void ToCanonicalForm()
+        {
+            for (int i = 0; i < expressions.Length; i++)
+            {
+                TransformExpressions();
+                expressions[i].Sign = Sign.Equal;
+            }
         }
     }
 }

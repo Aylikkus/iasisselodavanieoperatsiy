@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SimplexMethod
 {
     public class LinearExpression : INotifyPropertyChanged
     {
         private double[] coefficients;
-        private string sign;
+        private Sign sign;
         private double b;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -21,7 +16,7 @@ namespace SimplexMethod
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public string Sign
+        public Sign Sign
         {
             get
             {
@@ -29,15 +24,26 @@ namespace SimplexMethod
             }
             set
             {
-                if (value != "=" && value != "<=" && value != ">=")
-                {
-                    sign = "=";
-                    NotifyPropertyChanged();
-                    return;
-                }
-
                 sign = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(SignString));
+            }
+        }
+
+        public string SignString
+        {
+            get
+            {
+                return SignConverter.GetString(sign);
+            }
+            set
+            {
+                if (SignConverter.IsValidString(value))
+                {
+                    sign = SignConverter.GetSign(value);
+                }
+                NotifyPropertyChanged();
+                NotifyPropertyChanged(nameof(Sign));
             }
         }
 
@@ -54,6 +60,7 @@ namespace SimplexMethod
             }
         }
 
+        [IndexerName("Item")]
         public double this[int i]
         {
             get
@@ -63,40 +70,31 @@ namespace SimplexMethod
             set
             {
                 coefficients[i] = value;
-                NotifyPropertyChanged();
+                NotifyPropertyChanged("Item[]");
             }
         }
         
         public LinearExpression(int columns)
         {
-            sign = "=";
+            sign = Sign.Equal;
             coefficients = new double[columns];
         }
 
         private LinearExpression() { }
-        public int GetCountOfCoef()
+
+        public int CoefficientsCount()
         {
-            int count = 0;
+            return coefficients.Length;
+        }
+
+        public void InvertGreaterThan()
+        {
             for (int i = 0; i < coefficients.Length; i++)
             {
-
-                count++;
+                this[i] *= (-1);
             }
-            return count;
-        }
-
-        public double[] ChangeCoefficients(LinearExpression expression)
-        {
-            double[] coef = expression.coefficients;
-            for (int i = 0; i < coef.Length; i++)
-            {
-                coef[i] = coef[i] * (-1);
-            }
-            return coef;
-        }
-        public double[] ReturnCoefficients()
-        {
-            return coefficients;
+            B *= (-1);
+            Sign = Sign.LessThanEqual;
         }
     }
 }
