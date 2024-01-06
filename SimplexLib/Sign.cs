@@ -1,4 +1,4 @@
-﻿namespace SimplexMethod
+﻿namespace SimplexLib
 {
     public enum Sign
     {
