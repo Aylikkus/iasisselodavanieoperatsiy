@@ -154,7 +154,7 @@ namespace SimplexLib
 
                 for (int i = 1; i < n; i++)
                 {
-                    double b_i = table[i, n - 1];
+                    double b_i = table[i, m - 1];
                     double a_il = table[i, l];
                     double relation = b_i / a_il;
                     if (a_il > 0 && b_i > 0 && relation < minRelation)
@@ -244,7 +244,7 @@ namespace SimplexLib
             {
                 for (int i = 0; i < rows.Length; i++)
                 {
-                    if (rows[i] <= Constraints.Rows)
+                    if (rows[i] <= Constraints.Columns)
                     {
                         x[rows[i] - 1] = table[i + 1, columns.Length];
                     }
