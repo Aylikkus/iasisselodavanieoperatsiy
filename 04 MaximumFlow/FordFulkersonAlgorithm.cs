@@ -5,7 +5,7 @@ namespace MaximumFlow
         // Количество вершин
         int V;
 
-        // Остаточное дерево
+        // Поиск в ширину
         bool bfs(double[, ] rGraph, int I, int S, int[] parent)
         {
             bool[] visited = new bool[V];
