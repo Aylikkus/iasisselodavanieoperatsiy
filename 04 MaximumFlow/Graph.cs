@@ -1,9 +1,11 @@
+using System.Runtime.InteropServices;
+
 namespace MaximumFlow
 {
     public class Graph
     {
         private int verticesCount;
-        double[,] adjacencyMatrix;
+        private double[,] adjacencyMatrix;
 
         public Graph(int numOfVertices)
         {
@@ -11,18 +13,30 @@ namespace MaximumFlow
             adjacencyMatrix = new double[verticesCount, verticesCount];
         }
 
+        public double this[int i, int j]
+        {
+            get
+            {
+                return adjacencyMatrix[i - 1, j - 1];
+            }
+            set
+            {
+                if (i == j) throw new ArgumentException("Vertice can't have throughput to itself");
+                adjacencyMatrix[i - 1, j - 1] = value;
+            }
+        }
+
         public double GetThroughput(int i, int j)
         {
-            return adjacencyMatrix[i - 1, j - 1];
+            return this[i, j];
         }
 
         public void SetThroughput(int i, int j, double value)
         {
-            if (i == j) throw new ArgumentException("Vertice can't have throughput to itself");
-            adjacencyMatrix[i - 1, j - 1] = value;
+            this[i, j] = value;
         }
 
-        public int VerticesCount 
+        public int VerticesCount
         {
             get
             {
@@ -30,17 +44,9 @@ namespace MaximumFlow
             }
         }
 
-        public int GetEdgesCount()
+        public double GetMaxFlow(IMaxFlowSolveMethod method, int I, int S)
         {
-            int count = 0;
-            for (int i = 1; i <= verticesCount; i++)
-            {
-                for (int j = 1; j <= verticesCount; j++)
-                {
-                    if (GetThroughput(i, j) != 0) count++;
-                }
-            }
-            return count;
+            return method.Solve(this, I, S);
         }
     }
 }
