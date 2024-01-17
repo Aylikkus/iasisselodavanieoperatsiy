@@ -80,9 +80,9 @@ namespace SimplexLib
             int m = Constraints.Columns + 1;
 
             bool hasNegativeB = false;
-            double minB = 0;
-            int k = -1;
-            int l = -1;
+            double minB = double.MaxValue;
+            int k = 1;
+            int l = 1;
             for (int i = 1; i < n; i++)
             {
                 if (table[i, m - 1] >= 0)
@@ -100,7 +100,7 @@ namespace SimplexLib
 
             if (hasNegativeB)
             {
-                double minX = 0;
+                double minX = double.MaxValue;
                 for (int j = 0; j < m - 1; j++)
                 {
                     if (table[k, j] < minX)
@@ -130,9 +130,9 @@ namespace SimplexLib
             int m = Constraints.Columns + 1;
 
             bool hasNegativeF = false;
-            double minX = 0;
-            int k = -1;
-            int l = -1;
+            double minX = double.MaxValue;
+            int k = 1;
+            int l = 1;
             for (int j = 0; j < m - 1; j++)
             {
                 if (table[0, j] >= 0)
