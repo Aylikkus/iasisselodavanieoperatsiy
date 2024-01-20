@@ -82,7 +82,7 @@ namespace SimplexLib
             bool hasNegativeB = false;
             double minB = double.MaxValue;
             int k = 1;
-            int l = 1;
+            int l = -1;
             for (int i = 1; i < n; i++)
             {
                 if (table[i, m - 1] >= 0)
