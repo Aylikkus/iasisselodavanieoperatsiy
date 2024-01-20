@@ -93,8 +93,8 @@ namespace SimplexMethod
             int m = Constraints.Columns + 1;
 
             bool hasNegativeB = false;
-            double minB = 0;
-            int k = -1;
+            double minB = double.MaxValue;
+            int k = 1;
             int l = -1;
             for (int i = 1; i < n; i++)
             {
@@ -113,12 +113,12 @@ namespace SimplexMethod
 
             if (hasNegativeB)
             {
-                double minX = 0;
+                double minNegativeX = 0;
                 for (int j = 0; j < m - 1; j++)
                 {
-                    if (table[k, j] < minX)
+                    if (table[k, j] < minNegativeX)
                     {
-                        minX = table[k, j];
+                        minNegativeX = table[k, j];
                         l = j;
                     }
                 }
@@ -143,9 +143,9 @@ namespace SimplexMethod
             int m = Constraints.Columns + 1;
 
             bool hasNegativeF = false;
-            double minX = 0;
-            int k = -1;
-            int l = -1;
+            double minX = double.MaxValue;
+            int k = 1;
+            int l = 1;
             for (int j = 0; j < m - 1; j++)
             {
                 if (table[0, j] >= 0)
@@ -167,7 +167,7 @@ namespace SimplexMethod
 
                 for (int i = 1; i < n; i++)
                 {
-                    double b_i = table[i, n - 1];
+                    double b_i = table[i, m - 1];
                     double a_il = table[i, l];
                     double relation = b_i / a_il;
                     if (a_il > 0 && b_i > 0 && relation < minRelation)
@@ -257,7 +257,7 @@ namespace SimplexMethod
             {
                 for (int i = 0; i < rows.Length; i++)
                 {
-                    if (rows[i] <= Constraints.Rows)
+                    if (rows[i] <= Constraints.Columns)
                     {
                         x[rows[i] - 1] = table[i + 1, columns.Length];
                     }
