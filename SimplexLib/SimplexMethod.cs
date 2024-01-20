@@ -100,12 +100,12 @@ namespace SimplexLib
 
             if (hasNegativeB)
             {
-                double minX = double.MaxValue;
+                double minNegativeX = 0;
                 for (int j = 0; j < m - 1; j++)
                 {
-                    if (table[k, j] < minX)
+                    if (table[k, j] < minNegativeX)
                     {
-                        minX = table[k, j];
+                        minNegativeX = table[k, j];
                         l = j;
                     }
                 }
