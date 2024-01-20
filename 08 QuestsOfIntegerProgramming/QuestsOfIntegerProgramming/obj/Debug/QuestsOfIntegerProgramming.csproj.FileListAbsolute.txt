@@ -1,7 +1,0 @@
-C:\Users\user\source\repos\QuestsOfIntegerProgramming\QuestsOfIntegerProgramming\bin\Debug\QuestsOfIntegerProgramming.exe.config
-C:\Users\user\source\repos\QuestsOfIntegerProgramming\QuestsOfIntegerProgramming\bin\Debug\QuestsOfIntegerProgramming.exe
-C:\Users\user\source\repos\QuestsOfIntegerProgramming\QuestsOfIntegerProgramming\bin\Debug\QuestsOfIntegerProgramming.pdb
-C:\Users\user\source\repos\QuestsOfIntegerProgramming\QuestsOfIntegerProgramming\obj\Debug\QuestsOfIntegerProgramming.csproj.AssemblyReference.cache
-C:\Users\user\source\repos\QuestsOfIntegerProgramming\QuestsOfIntegerProgramming\obj\Debug\QuestsOfIntegerProgramming.csproj.CoreCompileInputs.cache
-C:\Users\user\source\repos\QuestsOfIntegerProgramming\QuestsOfIntegerProgramming\obj\Debug\QuestsOfIntegerProgramming.exe
-C:\Users\user\source\repos\QuestsOfIntegerProgramming\QuestsOfIntegerProgramming\obj\Debug\QuestsOfIntegerProgramming.pdb

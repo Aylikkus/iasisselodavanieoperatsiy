@@ -1,7 +1,0 @@
-C:\Users\user\source\repos\DuplicateAndDominantStrategies\DuplicateAndDominantStrategies\bin\Debug\DuplicateAndDominantStrategies.exe.config
-C:\Users\user\source\repos\DuplicateAndDominantStrategies\DuplicateAndDominantStrategies\bin\Debug\DuplicateAndDominantStrategies.exe
-C:\Users\user\source\repos\DuplicateAndDominantStrategies\DuplicateAndDominantStrategies\bin\Debug\DuplicateAndDominantStrategies.pdb
-C:\Users\user\source\repos\DuplicateAndDominantStrategies\DuplicateAndDominantStrategies\obj\Debug\DuplicateAndDominantStrategies.csproj.AssemblyReference.cache
-C:\Users\user\source\repos\DuplicateAndDominantStrategies\DuplicateAndDominantStrategies\obj\Debug\DuplicateAndDominantStrategies.csproj.CoreCompileInputs.cache
-C:\Users\user\source\repos\DuplicateAndDominantStrategies\DuplicateAndDominantStrategies\obj\Debug\DuplicateAndDominantStrategies.exe
-C:\Users\user\source\repos\DuplicateAndDominantStrategies\DuplicateAndDominantStrategies\obj\Debug\DuplicateAndDominantStrategies.pdb

@@ -40,8 +40,6 @@ namespace QuestsOfIntegerProgramming
             constraints[3] = le4;
             BranchAndBoundSolver solution = new BranchAndBoundSolver(targetFunction, constraints);
             solution.Print();
-            Console.Read();
-
         }
     }
 }

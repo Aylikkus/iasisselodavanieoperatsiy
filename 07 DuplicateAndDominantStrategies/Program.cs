@@ -32,7 +32,6 @@ namespace DuplicateAndDominantStrategies
                 matrix.RemoveDominantStrategies();
                 matrix.Print();
             }
-            Console.Read();
         }
     }
 }
