@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using SimplexLib;
@@ -7,94 +7,48 @@ namespace ConsoleApp22
 {
     class DataModel
     {
-        private TargetFunction targetFunction;
 
-        public TargetFunction TargetFunction
-        {
-            get { return targetFunction; }
-            set { targetFunction = value; }
-        }
+        public TargetFunction TargetFunction { get; set; }
 
-        private TargetFunction dualFunction;
-
-        public TargetFunction DualFunction
-        {
-            get { return dualFunction; }
-            set { dualFunction = value; }
-        }
+        public TargetFunction DualFunction { get; set; }
 
 
-        private Constraints dualConstraints;
+        public Constraints DualConstraints { get; set; }
 
-        public Constraints DualConstraints
-        {
-            get { return dualConstraints; }
+        public Constraints Constraints { get; set; }
 
-            set { dualConstraints = value; }
-        }
+        public double[,] A { get; set; }
 
-        private Constraints constraints;
+        public double[,] At { get; set; }
 
-        public Constraints Constraints
-        {
-            get { return constraints; }
-
-            set { constraints = value; }
-        }
-
-
-        private double[,] a;
-
-        public double[,] A
-        {
-            get { return a; }
-
-            set { a = value; }
-        }
-
-        private double[,] at;
-
-        public double[,] At
-        {
-            get { return at; }
-
-            set { at = value; }
-        }
-
-        public DataModel(TargetFunction targetFunction, params LinearExpression[] linearExpression)
+        Target dualTarget;
+        public DataModel(TargetFunction targetFunction, Constraints constraints)
         {
             TargetFunction = targetFunction;
-
-            Constraints = new Constraints(linearExpression.Length - 1, TargetFunction.coefficients.Length - 1);
-            for (int i = 0; i < linearExpression.Length - 1; i++)
-            {
-                Constraints[i] = linearExpression[i];
-            }
-            A = new double[linearExpression.Length , TargetFunction.coefficients.Length + 1];
-            At = new double[TargetFunction.coefficients.Length + 1, linearExpression.Length];
+            Constraints = constraints;
+            A = new double[constraints.Rows + 1, constraints.Columns + 1];
+            At = new double[constraints.Columns + 1,constraints.Rows + 1];
         }
 
 
-        public double[,] BuildingExtendedMatrix(Constraints constraints)
+        public double[,] BuildingExtendedMatrix()
         {
-            for (int i = 0; i <= constraints.Rows - 1; i++)
+            for (int i = 0; i < Constraints.Rows; i++)
             {
-                for (int j = 0; j <= constraints.Columns + 1; j++)
+                for (int j = 0; j <= Constraints.Columns; j++)
                 {
-                    if (j == constraints.Columns + 1)
-                        A[i, j] = constraints[i].B;
+                    if (j == Constraints.Columns)
+                        A[i, j] = Constraints[i].B;
                     else
-                        A[i, j] = constraints[i, j];        //Не уверен
+                        A[i, j] = Constraints[i, j];        
                 }
             }
 
-            for (int i = 0; i <= constraints.Columns + 1; i++)
+            for (int j = 0; j < TargetFunction.CoefficientsCount; j++)
             {
-                if (i == constraints.Columns + 1)
-                    A[constraints.Rows, i] = 0;              // f(x) || f(y)
-                else
-                    A[constraints.Rows, i] = TargetFunction[i];
+                A[A.GetLength(0) - 1, j] = TargetFunction.coefficients[j];
             }
+
             return A;
         }
 
@@ -110,20 +64,17 @@ namespace ConsoleApp22
             return At;
         }
 
-        // Если целевая функция стремится к max => Двойственная будет стремится к min
-        // dualTarget = Min , если целевая стремится к max
-
-        Target dualTarget = Target.Min;
+        
         public TargetFunction GetDualFunction()
         {
-            if (TargetFunction.Target == Target.Min)
-                dualTarget = Target.Max;
+            if (TargetFunction.Target == Target.Min) dualTarget = Target.Max;
+            else dualTarget = Target.Min;
 
 
             double[] coefficients = new double[At.GetLength(1) - 1];
-            for (int i = 0; i < At.GetLength(1) - 1; i++)
+            for (int j = 0; j < At.GetLength(1) - 1; j++)
             {
-                coefficients[i] = At[At.GetLength(0) - 1, i];
+                coefficients[j] = At[At.GetLength(0) - 1, j];
             }
 
             DualFunction = new TargetFunction(coefficients, 0, dualTarget);
@@ -132,12 +83,12 @@ namespace ConsoleApp22
 
         public Constraints GetDualConstraints()
         {
-            int countLinerExpression = At.GetLength(0) - 1;
-            DualConstraints = new Constraints(At.GetLength(0) - 1, countLinerExpression);
-
             int i = 0;
             LinearExpression le;
-            while(i < countLinerExpression)
+            int countLE = At.GetLength(0) - 1;
+            DualConstraints = new Constraints(countLE + (At.GetLength(1) - 1), At.GetLength(1) - 1);
+
+            while(i < countLE)
             {
                 le = new LinearExpression(At.GetLength(1) - 1);
                 for(int j = 0; j <= At.GetLength(1) - 1; j++)
@@ -147,11 +98,22 @@ namespace ConsoleApp22
                     else
                         le[j] = At[i, j];
                 }
-                le.Sign = Sign.GreaterThanEqual;
-                
+                le.Sign = Sign.GreaterThanEqual;      
                 DualConstraints[i] = le;
                 i++;
             }
+            for (int e = countLE; e < countLE + At.GetLength(1) - 1; e++)
+            {
+                le = new LinearExpression(At.GetLength(1) - 1);
+                for (int j = 0; j < At.GetLength(1) - 1; j++)
+                {
+                    if (j == e - countLE) le[j] = 1;
+                    else le[j] = 0;
+                }
+                le.Sign = Sign.GreaterThanEqual;
+                DualConstraints[e] = le;
+            }
+
             return DualConstraints;
         }
        
