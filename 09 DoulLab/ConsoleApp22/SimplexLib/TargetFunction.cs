@@ -58,9 +58,14 @@ namespace SimplexLib
         }
         public TargetFunction(double[] coefficients, double B, Target target)
         {
+            CoefficientsCount = 0;
             this.coefficients = coefficients;
             this.target = target;
             this.B = B;
+            for (int i = 0; i < coefficients.Length; i++)
+            {
+                this.CoefficientsCount++;
+            }
         }
 
         public TargetFunction GetCanonicalForm()
